@@ -50,7 +50,7 @@ class BUtils {
     const cidData = await this.getCid();
     for (let i = this.videoPFrom - 1; i < this.videoPTo; i++) {
       const cid = cidData[i].cid;
-      const part = `p${this.p}-${cidData[i].part}`;
+      const part = `${this.p}-${cidData[i].part}`;
       this.cidArr.push({ cid, part });
       this.p++;
     }
