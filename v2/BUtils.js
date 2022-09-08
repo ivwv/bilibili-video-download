@@ -5,6 +5,7 @@ const qs = require("qs");
 const { spawn } = require("node:child_process");
 // 导入终端进度条
 const ProgressBar = require("progress");
+const { resolve } = require("path");
 
 // console.log(config);
 class BUtils {
@@ -32,6 +33,7 @@ class BUtils {
   async getCid() {
     const url = `http://api.bilibili.com/x/player/pagelist?bvid=${this.bvid}`;
     try {
+      // await this.sleep(1000);
       const { data: res } = await axios.get(url, { headers: this.headers });
       return res.data;
     } catch (error) {
@@ -50,10 +52,21 @@ class BUtils {
     const cidData = await this.getCid();
     for (let i = this.videoPFrom - 1; i < this.videoPTo; i++) {
       const cid = cidData[i].cid;
-      const part = `${this.p}-${cidData[i].part}`;
+      const part = this.checkFileName(`${this.p}-${cidData[i].part}`);
+      // const part = `${this.p}-part2-${cidData[i].part}`;
+      // const part = `${cidData[i].part}`;
+      // const part = `${cidData[i].part}`;
       this.cidArr.push({ cid, part });
       this.p++;
     }
+  }
+  /**
+   * 定义一个用于替换和检查文件名是否和合法的方法，如果合法则返回文件名，否则替换不合法的字符串为 ""
+   * @param {String} fileName 文件名
+   */
+  checkFileName(fileName) {
+    const reg = /[\\\/\:\*\?\"\<\>\|]/g;
+    return fileName.replace(reg, "");
   }
 
   /**
@@ -77,6 +90,8 @@ class BUtils {
   async getDownloadUrl() {
     await this.getVideoUrl();
     for (let i = 0; i < this.videoUrlArr.length; i++) {
+      // await this.sleep(1000);
+      console.log("正在获取视频下载地址:" + i);
       const { data: res } = await axios.get(this.videoUrlArr[i], {
         headers: this.headers,
       });
@@ -88,6 +103,38 @@ class BUtils {
   //   await this.getDownloadUrl();
   //   console.log(this.downloadUrl);
   // }
+
+  async download(i) {
+    // await this.sleep(3000);
+    console.log("开始下载第：" + i);
+    const { data: res } = await axios.get(this.downloadUrl[i], {
+      headers: this.headers,
+      responseType: "stream",
+    });
+    var len = parseInt(res.headers["content-length"], 10);
+    var bar = new ProgressBar(
+      `  downloading ${this.cidArr[i].part} [:bar] :rate/bps :percent :etas`,
+      {
+        complete: "=",
+        incomplete: " ",
+        width: 20,
+        total: len,
+      }
+    );
+    var fileName = this.cidArr[i].part;
+    var file = path.join(
+      __dirname,
+      `${this.videoSavePath}/${fileName}${(Math.random() * 100).toFixed(1)}.flv`
+    );
+    res.pipe(fs.createWriteStream(file));
+    res.on("data", function (chunk) {
+      bar.tick(chunk.length);
+    });
+    res.on("end", function () {
+      console.log("\n");
+    });
+  }
+
   /**
    * 下载视频
    */
@@ -95,39 +142,19 @@ class BUtils {
     await this.getDownloadUrl();
     for (let i = 0; i < this.downloadUrl.length; i++) {
       try {
-        const { data: res } = await axios.get(this.downloadUrl[i], {
-          headers: this.headers,
-          responseType: "stream",
-        });
-        var len = parseInt(res.headers["content-length"], 10);
-        var bar = new ProgressBar(
-          `  downloading ${this.cidArr[i].part} [:bar] :rate/bps :percent :etas`,
-          {
-            complete: "=",
-            incomplete: " ",
-            width: 20,
-            total: len,
-          }
-        );
-        var fileName = this.cidArr[i].part;
-        var file = path.join(
-          __dirname,
-          `${this.videoSavePath}/${fileName}${(Math.random() * 100).toFixed(
-            1
-          )}.flv`
-        );
-        res.pipe(fs.createWriteStream(file));
-        res.on("data", function (chunk) {
-          bar.tick(chunk.length);
-        });
-        res.on("end", function () {
-          console.log("\n");
-        });
+        await this.download(i);
       } catch (error) {
         // return error;
         console.log(error);
       }
     }
+  }
+  async sleep(time) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, time);
+    });
   }
 
   // getInfo() {
