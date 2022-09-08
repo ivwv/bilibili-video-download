@@ -5,9 +5,10 @@ module.exports = {
   // 下载的视频从哪一集开始，默认为 1
   videoPFrom: 1,
   // 下载的视频到哪一集结束，如果视频只有一集，那就跟开始一样都为 1
-  videoPTo: 5,
+  videoPTo: 55,
   // 下载视频保存目录 需要自己创建
   videoSavePath: "./videos",
+  aria2cFileName: "url.txt",
   // b站用户请求头
   headers: {
     accept:

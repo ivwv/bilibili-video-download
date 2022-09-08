@@ -22,6 +22,9 @@ class BUtils {
     this.init();
   }
   init() {
+    if (fs.existsSync(this.obj.aria2cFileName)) {
+      fs.unlinkSync(this.obj.aria2cFileName);
+    }
     this.downloadVideo();
   }
   /**
@@ -95,11 +98,6 @@ class BUtils {
       this.downloadUrl.push(res.data.durl[0].url);
     }
   }
-  // 打印一下视频下载地址
-  // async printDownloadUrl() {
-  //   await this.getDownloadUrl();
-  //   console.log(this.downloadUrl);
-  // }
 
   async download(i) {
     const { data: res } = await axios.get(this.downloadUrl[i], {
@@ -140,13 +138,6 @@ class BUtils {
       // console.log(this.downloadUrl[i]);
       // console.log(this.cidArr[i].part);
       await this.writeToText(this.downloadUrl[i], this.cidArr[i].part);
-
-      // try {
-      //   await this.download(i);
-      // } catch (error) {
-      //   // return error;
-      //   console.log(error);
-      // }
     }
   }
   async sleep(time) {
@@ -157,29 +148,15 @@ class BUtils {
     });
   }
   async writeToText(url, filename) {
-    const headers_Keys = Object.keys(this.headers);
-    const headers_Values = Object.values(this.headers);
-    let headerAria2c = "";
-    for (let i = 0; i < headers_Keys.length; i++) {
-      // headerAria2c += `\t--header="${headers_Keys[i]}:${headers_Values[i]}"\r\n`;
-      headerAria2c += `\t referer=https://www.bilibili.com/video/${this.bvid}
-    user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0
-    out=${filename}\r\n`;
-    }
     fs.writeFileSync(
-      "./url.txt",
+      this.obj.aria2cFileName,
       `${url}
-       out=${filename}.flv
-       ${headerAria2c}`,
+       referer=https://www.bilibili.com/video/${this.bvid}
+       user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36
+       out=${filename}.flv\r\n`,
       { flag: "a" }
     );
   }
-
-  // getInfo() {
-  //   console.log(this.obj);
-  // }
-
-  //
 }
 
 // 导出类
