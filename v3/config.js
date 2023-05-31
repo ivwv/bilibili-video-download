@@ -1,11 +1,11 @@
 module.exports = {
   // 视频 BVID 号
 
-  bvid: "BV1zq4y1p7ga",
+  bvid: "BV1Zs4y1c7mv",
   // 下载的视频从哪一集开始，默认为 1
   videoPFrom: 1,
   // 下载的视频到哪一集结束，如果视频只有一集，那就跟开始一样都为 1
-  videoPTo: 55,
+  videoPTo: 195,
   // 下载视频保存目录 需要自己创建
   videoSavePath: "./videos",
   aria2cFileName: "url.txt",
@@ -16,8 +16,7 @@ module.exports = {
     "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
     "cache-control": "no-cache",
     pragma: "no-cache",
-    "sec-ch-ua":
-      '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
+    "sec-ch-ua": '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
     "sec-ch-ua-mobile": "?0",
     "sec-ch-ua-platform": '"Windows"',
     "sec-fetch-dest": "document",

@@ -1,7 +1,9 @@
 module.exports = {
   // 视频 BVID 号
 
-  bvid: "BV1Ee4y1C7jt",
+  // BV1ra4y1H7ih   尚硅谷Vue.JS教程快速入门到项目实战（Vue3/VueJS技术详解）
+  // BV1Vf4y1T7bw   尚硅谷VUE项目实战，前端项目-尚品汇(大型\重磅)
+  bvid: "BV1tN4y1A7DV",
   // 下载的视频从哪一集开始，默认为 1
   // 16-17  26 39 73 100 103 107
   videoPFrom: 1,
@@ -25,7 +27,7 @@ module.exports = {
     "sec-fetch-site": "none",
     "sec-fetch-user": "?1",
     "upgrade-insecure-requests": "1",
-    Referer: "https://www.bilibili.com/BV1Ee4y1C7jt",
+    Referer: "https://www.bilibili.com/BV1ra4y1H7ih",
     "Referrer-Policy": "strict-origin-when-cross-origin",
   },
 };
